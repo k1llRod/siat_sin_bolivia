@@ -1,0 +1,24 @@
+# -*- coding: utf-8 -*-
+
+import servicio_soap_base
+import servicio_facturacion
+import servicio_facturacion_codigos
+import servicio_facturacion_computarizada
+import servicio_facturacion_operaciones
+import servicio_facturacion_sincronizacion
+import servicio_recepcion_compras
+import base_config_settings
+import res_config
+import res_company
+import modelos_sincronizacion
+import siat_inherit_models
+import siat_cuis
+import siat_eventos_significativos
+import siat_giftcard
+import product
+import account_payment
+import account_invoice
+import product_uom
+import partner
+import res_currency
+import his_cufd

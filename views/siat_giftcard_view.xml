@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="siat_giftcard_tree_view" model="ir.ui.view">
+            <field name="name">siat.giftcard.tree.view</field>
+            <field name="model">siat.giftcard</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="amount"/>
+                    <field name="date_start"/>
+                    <field name="date_end"/>
+                    <field name="partner_id"/>
+                    <field name="sold_out"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="siat_giftcard_form_view" model="ir.ui.view">
+            <field name="name">siat.giftcard.form.view</field>
+            <field name="model">siat.giftcard</field>
+            <field name="arch" type="xml">
+                 <form>
+                     <sheet>
+                         <div class="oe_button_box" name="button_box">
+                            <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                                <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
+                            </button>
+                        </div>
+                         <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name" placeholder="Codigo"/>
+                            </h1>
+                        </div>
+
+                         <group>
+                             <group>
+                                 <field name="partner_id"/>
+                                 <field name="date_start"/>
+                                 <field name="sold_out"/>
+                             </group>
+                             <group>
+                                <label for="amount"/>
+                                <div name="amount_div" class="o_row">
+                                    <field name="amount"/>
+                                    <field name="currency_id" options="{'no_create': True, 'no_open': True}" groups="base.group_multi_currency"/>
+                                </div>
+                                 <field name="date_end"/>
+                             </group>
+                         </group>
+                     </sheet>
+                 </form>
+            </field>
+        </record>
+
+        <record id="siat_giftcard_search_view" model="ir.ui.view">
+            <field name="name">siat.giftcard.search.view</field>
+            <field name="model">siat.giftcard</field>
+            <field name="arch" type="xml">
+                <search>
+                   <field name="name" string="Codigo"/>
+                   <field name="amount"/>
+                    <field name="date_start"/>
+                    <field name="date_end"/>
+                    <filter string="Inactivos" domain="[('active','=',False)]"/>
+                    <filter string="Vendidos" domain="[('sold_out','=',True)]"/>
+                    <filter string="No Vendidos" domain="[('sold_out','=',False)]"/>
+               </search>
+            </field>
+        </record>
+
+        <record id="action_siat_giftcard" model="ir.actions.act_window">
+            <field name="name">Siat GiftCard</field>
+            <field name="res_model">siat.giftcard</field>
+            <field name='view_type'>form</field>
+            <field name='view_mode'>tree,form</field>
+        </record>
+
+        <menuitem id='menu_siat_menu'
+                  name='Siat'
+                  parent='account.menu_finance_configuration'
+                  sequence='10' />
+
+        <menuitem id='menu_siat_giftcard'
+                  action='action_siat_giftcard'
+                  parent='siat_sin_bolivia.menu_siat_menu'
+                  sequence='10' />
+
+        <record id="amount_giftcard_tree_view" model="ir.ui.view">
+            <field name="name">amount.giftcard.tree.view</field>
+            <field name="model">amount.giftcard</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="amount"/>
+                    <field name="currency_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_amount_giftcard" model="ir.actions.act_window">
+            <field name="name">Amount GiftCard</field>
+            <field name="res_model">amount.giftcard</field>
+            <field name='view_type'>form</field>
+            <field name='view_mode'>tree,form</field>
+        </record>
+
+        <menuitem id='menu_amount_giftcard'
+                  action='action_amount_giftcard'
+                  parent='siat_sin_bolivia.menu_siat_menu'
+                  sequence='11'/>
+
+    </data>
+</odoo>

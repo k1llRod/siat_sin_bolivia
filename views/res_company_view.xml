@@ -1,0 +1,682 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+    	<!--
+        extension a res_company para adicionar los datos necesarios para que la company pueda conectar a los servicios SOAP
+        -->
+        <record id="view_company_form_siat_specs_inherit" model="ir.ui.view">
+            <field name="name">view.company.form.siat.specs.inherit</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//label[@for='rml_header1']" position="before">
+                    <label for="siat_nit" class="oe_edit_only"/>
+                    <h1>
+                        <field name="siat_nit" widget="char" class="oe_inline"/>
+                    </h1>
+                    <group>
+                        <field name="siat_use_razon_social" groups="base.group_no_one"/>
+                        <field name="siat_razon_social" attrs="{'invisible': [('siat_use_razon_social', '=', False)], 'required': [('siat_use_razon_social', '=', 'True')]}"/>
+                    </group>
+                </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page string="Siat Cuis">
+                        <field name="siat_cuis_ids" context="{'default_company_id':id}" nolabel="1">
+                            <tree >
+                                <field name="name"/>
+                            </tree>
+                        </field>
+                    </page>
+
+                    <page string="SIAT Technical spec" groups="base.group_no_one">
+                        <group string="Data" colspan="2">
+                            <field name="environment_code" required="1"/>
+                            <field name="mode_constant" required="1"/>
+                            <field name="system_code" required="1"/>
+<!--                            <field name="cuis" required="1"/>-->
+<!--                            <field name="branch_code" required="1"/>-->
+<!--                            <field name="selling_point_code" required="1"/>-->
+                        </group>
+                        <group string="SERVICIO DE FACTURACION COMPUTARIZADA" colspan="6">
+                            <field name="wsdl_computerized_billing" required="1" colspan="6"/>
+                            <button name="test_wsdl_computerized_billing"
+                                    string="Connexion Test"
+                                    type="object"
+                                    class="oe_link"/>
+                        </group>
+                        <group string="SERVICIO DE SINCRONIZACIÓN DE DATOS" colspan="6">
+                            <field name="wsdl_data_sync" required="1" colspan="6"/>
+                            <button name="test_wsdl_data_sync"
+                                    string="Connexion Test"
+                                    type="object"
+                                    class="oe_link"/>
+                        </group>
+                        <group string="SERVICIO DE RECEPCIÓN DE COMPRAS" colspan="6">
+                            <field name="wsdl_receipt_of_purchases" required="1" colspan="6"/>
+                            <button name="test_wsdl_receipt_of_purchases"
+                                    string="Connexion Test"
+                                    type="object"
+                                    class="oe_link"/>
+                        </group>
+                        <group string="SERVICIO DE OPERACIONES " colspan="6">
+                            <field name="wsdl_operations" required="1" colspan="6"/>
+                            <button name="test_wsdl_operations"
+                                    string="Connexion Test"
+                                    type="object"
+                                    class="oe_link"/>
+                        </group>
+                        <group string="SERVICIO DE OBTENCIÓN DE CÓDIGOS" colspan="6">
+                            <field name="wsdl_codes_procurements" required="1" colspan="6"/>
+                            <button name="test_wsdl_codes_procurements"
+                                    string="Connexion Test"
+                                    type="object"
+                                    class="oe_link"/>
+                        </group>
+                         <group string="FACTURA COMPRA-VENTA" colspan="6">
+                            <field name="wsdl_in_out_invoice" required="1" colspan="6"/>
+                            <button name="test_wsdl_in_out_invoice"
+                                    string="Connexion Test"
+                                    type="object"
+                                    class="oe_link"/>
+                        </group>
+                        <group string="TOKEN DELEGADO" colspan="6">
+                            <field name="delegated_token" required="1" colspan="6"/>
+                        </group>
+                        <group string="RUTA utilizada en QR" colspan="6">
+                            <field name="lnk_st_qr" required="1" colspan="6"/>
+                        </group>
+                    </page>
+                    <page string="SIAT">
+                        <button name="action_consulta_punto_venta"
+                                string="Consulta POS"
+                                type="object"
+                                class="btn-primary"/>
+                        <group string="Sincronizacion" colspan="2">
+                            <field name="siat_cuis_id"/>
+                        </group>
+                        <button name="action_sincronizar_lista_mensajes_servicios"
+                                string="Lista de Mensajes"
+                                type="object"
+                                class="btn-primary"/>
+
+                        <button name="action_sincronizar_lista_productos_servicios"
+                                string="Lista de Productos"
+                                type="object"
+                                class="btn-primary"/>
+
+                        <button name="action_sincronizar_parametrica_eventos_significativos"
+                                string="Eventos Significativos"
+                                type="object"
+                                class="btn-primary"/>
+
+                        <button name="action_sincronizar_parametrica_motivo_anulacion"
+                                string="Motivo Anulacion"
+                                type="object"
+                                class="btn-primary"/>
+
+                        <button name="action_sincronizar_parametrica_pais_origen"
+                                string="Pais Origen"
+                                type="object"
+                                class="btn-primary"/>
+
+                        <button name="action_sincronizar_parametrica_documento_identidad"
+                                string="Docuemnto Identidad"
+                                type="object"
+                                class="btn-primary"/>
+
+                        <button name="action_sincronizar_param_tipo_documento_sector"
+                                string="Tipo Documento Sector"
+                                type="object"
+                                class="btn-primary"/>
+
+                        <button name="action_sincronizar_param_cod_actividad_documento_sector"
+                                string="Actividades Documento Sector"
+                                type="object"
+                                class="btn-primary"/>
+
+                        <button name="action_sincronizar_parametrica_tipo_emision"
+                                string="Tipo Emision"
+                                type="object"
+                                class="btn-primary"/>
+
+                        <button name="action_sincronizar_parametrica_tipo_habitacion"
+                                string="Tipo Habitacion"
+                                type="object"
+                                class="btn-primary"/>
+
+                        <button name="action_sincronizar_parametrica_tipo_metodo_pago"
+                                string="Tipo Metodo Pago"
+                                type="object"
+                                class="btn-primary"/>
+
+                        <button name="action_sincronizar_parametrica_tipo_moneda"
+                                string="Tipo Moneda"
+                                type="object"
+                                class="btn-primary"/>
+
+                        <button name="action_sincronizar_parametrica_tipo_punto_venta"
+                                string="Tipo Punto Venta"
+                                type="object"
+                                class="btn-primary"/>
+
+                        <button name="action_sincronizar_parametrica_tipos_factura"
+                                string="Tipos Factura"
+                                type="object"
+                                class="btn-primary"/>
+
+                        <button name="action_sincronizar_parametrica_unidad_medida"
+                                string="Unidad Medida"
+                                type="object"
+                                class="btn-primary"/>
+
+                        <button name="action_sincronizar_codigos_actividades"
+                                string="Codigos Actividades"
+                                type="object"
+                                class="btn-primary"/>
+
+                        <button name="action_get_informationfecha_hora"
+                                string="Fecha y Hora"
+                                type="object"
+                                class="btn-primary"/>
+
+                        <button name="action_sincronizar_leyendas_facturas"
+                                string="Leyendas de facturas"
+                                type="object"
+                                class="btn-primary"/>
+
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <!--      VISTA TREE LISTA DE CODIGOS DE ACTIVIDADES      -->
+
+        <record id="codigos_actividades_tree_view" model="ir.ui.view">
+            <field name="name">codigos.actividades.tree.view</field>
+            <field name="model">codigos.actividades</field>
+            <field name="arch" type="xml">
+                <tree string="Lista de Mensajes de Servicio" editable="bottom">
+                    <field name="codigo_caeb"/>
+                    <field name="descripcion"/>
+                    <field name="tipo_actividad"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_codigos_actividades" model="ir.actions.act_window">
+            <field name="name">Codigos de Actividades</field>
+            <field name="res_model">codigos.actividades</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="codigos_actividades_tree_view"/>
+        </record>
+
+
+        <!--      VISTA TREE LISTA DE MENSAJES DE SERVICIO      -->
+
+        <record id="mensajes_servicios_tree_view" model="ir.ui.view">
+            <field name="name">mensajes.servicios.tree.view</field>
+            <field name="model">mensajes.servicios</field>
+            <field name="arch" type="xml">
+                <tree string="Lista de Mensajes de Servicio" editable="bottom">
+                    <field name="codigo_clasificador"/>
+                    <field name="descripcion"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_mensajes_servicios" model="ir.actions.act_window">
+            <field name="name">Mensajes de Servicio</field>
+            <field name="res_model">mensajes.servicios</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="mensajes_servicios_tree_view"/>
+        </record>
+
+        <!--      VISTA TREE LISTA DE PRODUCTOS DE SERVICIO      -->
+
+        <record id="productos_servicios_tree_view" model="ir.ui.view">
+            <field name="name">productos.servicios.tree.view</field>
+            <field name="model">productos.servicios</field>
+            <field name="arch" type="xml">
+                <tree string="Lista de Mensajes de Servicio" editable="bottom">
+                    <field name="codigo_actividad"/>
+                    <field name="codigo_producto"/>
+                    <field name="descripcion_producto"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_productos_servicios" model="ir.actions.act_window">
+            <field name="name">Productos de Servicio</field>
+            <field name="res_model">productos.servicios</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="productos_servicios_tree_view"/>
+        </record>
+
+         <!--      VISTA TREE LISTA DE PARAMETRICA EVENTOS SIGNIFICATIVOS      -->
+
+        <record id="eventos_significativos_tree_view" model="ir.ui.view">
+            <field name="name">eventos.significativos.tree.view</field>
+            <field name="model">eventos.significativos</field>
+            <field name="arch" type="xml">
+                <tree string="Eventos Significativos" editable="bottom">
+                    <field name="codigo_clasificador"/>
+                    <field name="descripcion"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_eventos_significativos" model="ir.actions.act_window">
+            <field name="name"> Eventos Significativos</field>
+            <field name="res_model">eventos.significativos</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="eventos_significativos_tree_view"/>
+        </record>
+
+      <!--      VISTA TREE LISTA DE PARAMETRICA MOTIVO ANULACION      -->
+
+        <record id="motivo_anulacion_tree_view" model="ir.ui.view">
+            <field name="name">motivo.anulacion.tree.view</field>
+            <field name="model">motivo.anulacion</field>
+            <field name="arch" type="xml">
+                <tree string="Motivo Anulacion" editable="bottom">
+                    <field name="codigo_clasificador"/>
+                    <field name="descripcion"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_motivo_anulacion" model="ir.actions.act_window">
+            <field name="name">Motivo Anulacion</field>
+            <field name="res_model">motivo.anulacion</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="motivo_anulacion_tree_view"/>
+        </record>
+
+        <!--      VISTA TREE LISTA DE PARAMETRICA PAIS ORIGEN      -->
+
+        <record id="pais_origen_tree_view" model="ir.ui.view">
+            <field name="name">pais.origen.tree.view</field>
+            <field name="model">pais.origen</field>
+            <field name="arch" type="xml">
+                <tree string="Pais Origen" editable="bottom">
+                    <field name="codigo_clasificador"/>
+                    <field name="descripcion"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_pais_origen" model="ir.actions.act_window">
+            <field name="name">Pais Origen</field>
+            <field name="res_model">pais.origen</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="pais_origen_tree_view"/>
+        </record>
+
+       <!--      VISTA TREE LISTA DE PARAMETRICA DOCUMENTO IDENTIDAD     -->
+
+        <record id="documento_identidad_tree_view" model="ir.ui.view">
+            <field name="name">documento.identidad.tree.view</field>
+            <field name="model">documento.identidad</field>
+            <field name="arch" type="xml">
+                <tree string="Documento Identidad" editable="bottom">
+                    <field name="codigo_clasificador"/>
+                    <field name="descripcion"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_documento_identidad" model="ir.actions.act_window">
+            <field name="name">Documento Identidad</field>
+            <field name="res_model">documento.identidad</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="pais_origen_tree_view"/>
+        </record>
+
+        <!--      VISTA TREE LISTA DE PARAMETRICA DOCUMENTO SECTOR     -->
+
+        <record id="documento_sector_tree_view" model="ir.ui.view">
+            <field name="name">documento.sector.tree.view</field>
+            <field name="model">documento.sector</field>
+            <field name="arch" type="xml">
+                <tree string="Documento Sector" editable="bottom">
+                    <field name="codigo_clasificador"/>
+                    <field name="descripcion"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_documento_sector" model="ir.actions.act_window">
+            <field name="name">Documento Sector</field>
+            <field name="res_model">documento.sector</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="documento_sector_tree_view"/>
+        </record>
+
+        <!--      VISTA TREE LISTA DE codigos actividades DOCUMENTO SECTOR     -->
+
+        <record id="actividades_documento_sector_tree_view" model="ir.ui.view">
+            <field name="name">actividades.documento.sector.tree.view</field>
+            <field name="model">actividades.documento.sector</field>
+            <field name="arch" type="xml">
+                <tree string="Cod Actividades Documento Sector" editable="bottom">
+                    <field name="codigo_actividad"/>
+                    <field name="codigo_documento_sector"/>
+                    <field name="tipo_documento_sector"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_actividades_documento_sector" model="ir.actions.act_window">
+            <field name="name">Tipo Actividades Documento Sector</field>
+            <field name="res_model">actividades.documento.sector</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="actividades_documento_sector_tree_view"/>
+        </record>
+
+         <!--      VISTA TREE LISTA DE PARAMETRICA TIPO EMISION     -->
+
+        <record id="tipo_emision_tree_view" model="ir.ui.view">
+            <field name="name">tipo.emision.tree.view</field>
+            <field name="model">tipo.emision</field>
+            <field name="arch" type="xml">
+                <tree string="Tipo Emision" editable="bottom">
+                    <field name="codigo_clasificador"/>
+                    <field name="descripcion"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_tipo_emision" model="ir.actions.act_window">
+            <field name="name">Tipo Emision</field>
+            <field name="res_model">tipo.emision</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tipo_emision_tree_view"/>
+        </record>
+
+         <!--      VISTA TREE LISTA DE PARAMETRICA TIPO HABITACION     -->
+
+        <record id="tipo_habitacion_tree_view" model="ir.ui.view">
+            <field name="name">tipo.habitacion.tree.view</field>
+            <field name="model">tipo.habitacion</field>
+            <field name="arch" type="xml">
+                <tree string="Tipo Habitacion" editable="bottom">
+                    <field name="codigo_clasificador"/>
+                    <field name="descripcion"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_tipo_habitacion" model="ir.actions.act_window">
+            <field name="name">Tipo Habitacion</field>
+            <field name="res_model">tipo.habitacion</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tipo_habitacion_tree_view"/>
+        </record>
+
+        <!--      VISTA TREE LISTA DE PARAMETRICA TIPO METODO PAGO     -->
+
+        <record id="tipo_metodo_pago_tree_view" model="ir.ui.view">
+            <field name="name">tipo.metodo.pago.tree.view</field>
+            <field name="model">tipo.metodo.pago</field>
+            <field name="arch" type="xml">
+                <tree string="Tipo Metodo Pago" editable="bottom">
+                    <field name="codigo_clasificador"/>
+                    <field name="descripcion"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_tipo_metodo_pago" model="ir.actions.act_window">
+            <field name="name">Tipo Metodo Pago</field>
+            <field name="res_model">tipo.metodo.pago</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tipo_metodo_pago_tree_view"/>
+        </record>
+
+        <!--      VISTA TREE LISTA DE PARAMETRICA TIPO MONEDA     -->
+
+        <record id="tipo_moneda_tree_view" model="ir.ui.view">
+            <field name="name">tipo.moneda.tree.view</field>
+            <field name="model">tipo.moneda</field>
+            <field name="arch" type="xml">
+                <tree string="Tipo Moneda" editable="bottom">
+                    <field name="codigo_clasificador"/>
+                    <field name="descripcion"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_tipo_moneda" model="ir.actions.act_window">
+            <field name="name">Tipo Moneda</field>
+            <field name="res_model">tipo.moneda</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tipo_moneda_tree_view"/>
+        </record>
+
+        <!--      VISTA TREE LISTA DE PARAMETRICA TIPO PUNTO VENTA     -->
+
+        <record id="tipo_punto_venta_tree_view" model="ir.ui.view">
+            <field name="name">tipo.punto.venta.tree.view</field>
+            <field name="model">tipo.punto.venta</field>
+            <field name="arch" type="xml">
+                <tree string="Tipo Punto Venta" editable="bottom">
+                    <field name="codigo_clasificador"/>
+                    <field name="descripcion"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_tipo_punto_venta" model="ir.actions.act_window">
+            <field name="name">Tipo Punto Venta</field>
+            <field name="res_model">tipo.punto.venta</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tipo_punto_venta_tree_view"/>
+        </record>
+
+        <!--      VISTA TREE LISTA DE PARAMETRICA TIPOS FACTURA    -->
+
+        <record id="tipos_factura_tree_view" model="ir.ui.view">
+            <field name="name">tipos.factura.tree.view</field>
+            <field name="model">tipos.factura</field>
+            <field name="arch" type="xml">
+                <tree string="Tipos Factura" editable="bottom">
+                    <field name="codigo_clasificador"/>
+                    <field name="descripcion"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_tipos_factura" model="ir.actions.act_window">
+            <field name="name">Tipos Factura</field>
+            <field name="res_model">tipos.factura</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tipos_factura_tree_view"/>
+        </record>
+
+        <!--      VISTA TREE LISTA DE PARAMETRICA LEYENDAS FACTURA    -->
+
+        <record id="leyendas_factura_tree_view" model="ir.ui.view">
+            <field name="name">leyendas.factura.tree.view</field>
+            <field name="model">leyenda.factura</field>
+            <field name="arch" type="xml">
+                <tree string="Leyendas Factura" editable="bottom">
+                    <field name="codigo_actividad"/>
+                    <field name="descripcion_leyenda"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_leyendas_factura" model="ir.actions.act_window">
+            <field name="name">Leyendas de Factura</field>
+            <field name="res_model">leyenda.factura</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="leyendas_factura_tree_view"/>
+        </record>
+
+        <!--      VISTA TREE LISTA DE PARAMETRICA UNIDAD MEDIDA    -->
+
+        <record id="unidad_medida_tree_view" model="ir.ui.view">
+            <field name="name">unidad.medida.tree.view</field>
+            <field name="model">unidad.medida</field>
+            <field name="arch" type="xml">
+                <tree string="Unidad Medida" editable="bottom">
+                    <field name="codigo_clasificador"/>
+                    <field name="descripcion"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_unidad_medida" model="ir.actions.act_window">
+            <field name="name">Unidad Medida</field>
+            <field name="res_model">unidad.medida</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="unidad_medida_tree_view"/>
+        </record>
+
+        <!--      VISTAS PARA HISTORIA DE CUFD   -->
+
+        <record id="historial_cufd_tree_view" model="ir.ui.view">
+            <field name="name">historial.cufd.tree.view</field>
+            <field name="model">historial.cufd</field>
+            <field name="arch" type="xml">
+                <tree string="CUFD History" >
+                    <field name="name"/>
+<!--                    <field name="cufd_code"/>-->
+                    <field name="control_code"/>
+<!--                    <field name="direction"/>-->
+                    <field name="effective_date"/>
+                    <field name="create_date"/>
+                    <field name="cuis"/>
+                    <field name="branch_code"/>
+                    <field name="selling_point_code"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="historial_cufd_form_view">
+            <field name="name">historial.cufd.form.view</field>
+            <field name="model">historial.cufd</field>
+            <field name="arch" type="xml">
+                <form string="Asset category">
+                    <group>
+                        <field name="name"/>
+                        <field name="cufd_code"/>
+                        <field name="control_code"/>
+                        <field name="direction"/>
+                        <field name="effective_date"/>
+                        <field name="create_date"/>
+                        <field name="cuis"/>
+                        <field name="branch_code"/>
+                        <field name="selling_point_code"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_historial_cufd" model="ir.actions.act_window">
+            <field name="name">Historial Cufd</field>
+            <field name="res_model">historial.cufd</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="historial_cufd_tree_view"/>
+        </record>
+
+         <!--      MENU SIAT BASE.CONFIG      -->
+
+        <menuitem id="menu_siat_sin_bolivia"
+                  name="SIAT"
+                  parent="base.menu_custom"
+                  sequence="30"/>
+
+        <menuitem id="menu_codigos_actividades"
+                  action="action_codigos_actividades"
+                  parent="menu_siat_sin_bolivia"/>
+
+        <menuitem id="menu_mensajes_servicios"
+                  action="action_mensajes_servicios"
+                  parent="menu_siat_sin_bolivia"/>
+
+        <menuitem id="menu_productos_servicios"
+                  action="action_productos_servicios"
+                  parent="menu_siat_sin_bolivia"/>
+
+        <menuitem id="menu_eventos_significativos"
+                  action="action_eventos_significativos"
+                  parent="menu_siat_sin_bolivia"/>
+
+        <menuitem id="menu_motivo_anulacion"
+                  action="action_motivo_anulacion"
+                  parent="menu_siat_sin_bolivia"/>
+
+        <menuitem id="menu_pais_origen"
+                  action="action_pais_origen"
+                  parent="menu_siat_sin_bolivia"/>
+
+         <menuitem id="menu_documento_identidad"
+                  action="action_documento_identidad"
+                  parent="menu_siat_sin_bolivia"/>
+
+        <menuitem id="menu_documento_sector"
+                  action="action_documento_sector"
+                  parent="menu_siat_sin_bolivia"/>
+
+        <menuitem id="menu_cod_actividad_documento_sector"
+                  action="action_actividades_documento_sector"
+                  parent="menu_siat_sin_bolivia"/>
+
+        <menuitem id="menu_tipo_emision"
+                  action="action_tipo_emision"
+                  parent="menu_siat_sin_bolivia"/>
+
+        <menuitem id="menu_tipo_habitacion"
+                  action="action_tipo_habitacion"
+                  parent="menu_siat_sin_bolivia"/>
+
+        <menuitem id="menu_tipo_metodo_pago"
+                  action="action_tipo_metodo_pago"
+                  parent="menu_siat_sin_bolivia"/>
+
+        <menuitem id="menu_tipo_moneda"
+                  action="action_tipo_moneda"
+                  parent="menu_siat_sin_bolivia"/>
+
+        <menuitem id="menu_tipo_punto_venta"
+                  action="action_tipo_punto_venta"
+                  parent="menu_siat_sin_bolivia"/>
+
+        <menuitem id="menu_tipos_factura"
+                  action="action_tipos_factura"
+                  parent="menu_siat_sin_bolivia"/>
+
+        <menuitem id="menu_unidad_medida"
+                  action="action_unidad_medida"
+                  parent="menu_siat_sin_bolivia"/>
+
+        <menuitem id="menu_leyendas_factura"
+                  action="action_leyendas_factura"
+                  parent="menu_siat_sin_bolivia"/>
+
+        <menuitem id="menu_historial_cufd"
+                  action="action_historial_cufd"
+                  parent="menu_siat_sin_bolivia"/>
+
+    </data>
+</openerp>

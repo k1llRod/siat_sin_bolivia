@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Adicionamos el VIEW para el WIZARD -->
+    <record id="siat_wizard_register_form_view" model="ir.ui.view">
+        <field name="name">siat.wizard.register.form.view</field>
+        <field name="model">siat.wizard.register</field>
+        <field name="arch" type="xml">
+            <form string="Registrar Punto de Venta">
+               <group>
+                   <group>
+                       <field name="name"/>
+                       <field name="description"/>
+                       <field name="tipo_punto_venta_id"/>
+                       <field name="bol_nit"/>
+                   </group>
+                   <group>
+                       <field name="environment_code"/>
+                       <field name="mode_constant"/>
+                       <field name="system_code"/>
+                       <field name="branch_code"/>
+                       <field name="cuis"/>
+                   </group>
+
+               </group>
+                <footer>
+                    <button string='Create' name="action_create_point_of_sale" type="object" class="btn-primary"/>
+                    <button string="Close" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

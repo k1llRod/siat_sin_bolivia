@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="cancel_invoice_siat_form_view" model="ir.ui.view">
+        <field name="name">cancel.invoice.siat.form.view</field>
+        <field name="model">cancel.invoice.siat</field>
+        <field name="arch" type="xml">
+            <form string="Cancelar Factura">
+               <group>
+                   <field name="motivo_anulacion_id"
+                          required="1"
+                          options="{'no_open': True, 'no_create': True}"/>
+               </group>
+                <footer>
+                    <button string='Cancelar Factura' name="action_assign_cancel_invoice_siat" type="object" class="btn-primary"/>
+                    <button string="Cerrar" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <act_window id="action_cancel_invoice_siat"
+                name="Cancelar Facturas Siat"
+                res_model="cancel.invoice.siat"
+                src_model="account.invoice"
+                view_mode="form"
+                target="new"
+                key2="client_action_multi"/>
+
+</odoo>

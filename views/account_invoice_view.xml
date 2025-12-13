@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="siat_invoice_form" model="ir.ui.view">
+            <field name="name">siat.invoice.form</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_subtotal']" position="after">
+                    <button name="action_register_gift_card" string="Gift Card" type="object" icon="fa-list" class="bg-success"/>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="siat_view_invoice_line_form" model="ir.ui.view">
+            <field name="name">siat.view.invoice.line.form</field>
+            <field name="model">account.invoice.line</field>
+            <field name="inherit_id" ref="account.view_invoice_line_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//group" position="after">
+                    <notebook>
+                        <page string="Gift Card">
+                            <field name="siat_giftcard_ids">
+                                <tree >
+                                    <field name="name"/>
+                                    <field name="amount"/>
+                                    <field name="date_start"/>
+                                    <field name="date_end"/>
+                                    <field name="partner_id"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </xpath>
+
+            </field>
+        </record>
+
+        <act_window id="action_view_cancel_invoice_siat"
+                    name="Cancelar Facturas"
+                    res_model="cancel.invoice.siat"
+                    src_model="account.invoice"
+                    view_mode="form"
+                    target="new"
+                    key2="client_action_multi"/>
+
+    </data>
+</openerp>

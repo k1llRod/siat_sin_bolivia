@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Adicionamos el VIEW para el WIZARD -->
+    <record id="register_evento_card_form_view" model="ir.ui.view">
+        <field name="name">register.evento.card.form.view</field>
+        <field name="model">register.evento.significativo</field>
+        <field name="arch" type="xml">
+            <form string="Registrar Punto de Venta">
+               <group>
+                   <group>
+                       <field name="company_id" readonly="1"/>
+                       <field name="system_code" readonly="1"/>
+                       <field name="siat_nit" readonly="1"/>
+                       <field name="environment_code" invisible="1"/>
+                       <field name="evento_significativo_id" options="{'no_open':True,'no_create':True}"/>
+                       <field name="date_start"/>
+                   </group>
+                   <group>
+                       <field name="siat_cuis_id" readonly="1"/>
+                       <field name="cuis" readonly="1"/>
+                       <field name="selling_point_code" readonly="1"/>
+                       <field name="branch_code" readonly="1"/>
+                       <field name="siat_cafc" readonly="1"/>
+                       <field name="date_end"/>
+                   </group>
+
+               </group>
+                <group>
+                    <field name="cufd" readonly="1"/>
+                    <field name="descripcion"/>
+                </group>
+                <footer>
+                    <button string='Create' name="action_register_event" type="object" class="btn-primary"/>
+                    <button string="Close" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <act_window id="action_view_register_event"
+                    name="Evento Significativo"
+                    res_model="register.evento.significativo"
+                    src_model="account.invoice"
+                    view_mode="form"
+                    target="new"
+                    key2="client_action_multi"/>
+</odoo>

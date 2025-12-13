@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="register_gift_card_form_view" model="ir.ui.view">
+        <field name="name">register.gift.card.form.view</field>
+        <field name="model">register.gift.card</field>
+        <field name="arch" type="xml">
+            <form string="Registrar Gift Card">
+               <group>
+                   <field name="amount" options='{"no_open": True, "no_create": True}'/>
+                   <field name="invoice_line_id" invisible="1"/>
+                   <field name="amount_ref" invisible="1"/>
+                   <field name="siat_giftcard_ids" domain="[('amount.amount', '=', amount_ref),('active', '=', True),('sold_out', '=', False)]"/>
+               </group>
+                <footer>
+                    <button string='Asignacion' name="action_assign_gift_card" type="object" class="btn-primary"/>
+                    <button string="Close" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

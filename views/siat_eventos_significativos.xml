@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="siat_eventos_significativos_tree_view" model="ir.ui.view">
+            <field name="name">siat.eventos.significativos.tree.view</field>
+            <field name="model">siat.eventos.significativos</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="siat_cuis_id"/>
+                    <field name="environment_code"/>
+                    <field name="state"/>
+                    <field name="reception_code"/>
+                    <field name="date_start"/>
+                    <field name="date_end"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="siat_eventos_significativos_form_view" model="ir.ui.view">
+            <field name="name">siat.eventos.significativos.form.view</field>
+            <field name="model">siat.eventos.significativos</field>
+            <field name="arch" type="xml">
+                 <form>
+                     <header>
+                         <button name="action_register_event_significant"
+                                 string="Registrar Evento"
+                                 type="object"
+                                 class="btn-primary"
+                                 attrs="{'invisible': [('state', '!=', 'Draft')]}"/>
+                         <button name="action_register_package_invoices"
+                                 string="Envio paquete"
+                                 type="object"
+                                 class="btn-primary"
+                                 attrs="{'invisible': [('package_sent', '!=', False)]}"/>
+                         <button name="action_inv_package_receipt_validation"
+                                 string="Validacion"
+                                 type="object"
+                                 class="btn-primary"
+                                 attrs="{'invisible': ['|',('state', '!=', 'send'),('package_sent', '=', False)]}"/>
+                         <button name="action_consulta_evento_significativo"
+                                 string="Consultar evento significativo"
+                                 type="object"
+                                 class="btn-primary"/>
+
+                         <field name="state" widget="statusbar"/>
+                         <field name="package_sent" invisible="1"/>
+                     </header>
+                     <sheet>
+                         <div class="oe_title">
+                            <label for="siat_cuis_id" class="oe_edit_only"/>
+                            <h1>
+                                <field name="siat_cuis_id" placeholder="Siat Cuis"/>
+                            </h1>
+                         </div>
+                         <group>
+                             <group>
+                                 <field name="cuis"/>
+
+                                 <field name="branch_code"/>
+                                 <field name="selling_point_code"/>
+                             </group>
+                             <group>
+                                 <field name="company_id"/>
+                                 <field name="environment_code"/>
+                                 <field name="system_code"/>
+                                 <field name="siat_nit"/>
+                             </group>
+
+                         </group>
+
+                         <group string="Informacion Evento">
+                             <group>
+                                 <field name="evento_significativo_id"/>
+                                 <field name="date_start"/>
+                                 <field name="date_end"/>
+                                 <field name="siat_cafc"/>
+                             </group>
+                             <group>
+                                 <field name="descripcion"/>
+                                 <field name="reception_code"/>
+                                 <field name="package_reception_code"/>
+
+                                 <field name="tar_filename" invisible="1" />
+                                 <field name="tar_file" filename="tar_filename"/>
+<!--                                 <field name="tar_file"/>-->
+                             </group>
+                         </group>
+                         <group>
+                             <field name="cufd"/>
+                         </group>
+                         <notebook>
+                            <page string="Facturas">
+                                <field name="invoice_ids" readonly="1">
+                                    <tree string="Purchase Order Lines" editable="bottom" create="0">
+                                        <field name="partner_id" groups="base.group_user" string="Vendor"/>
+                                        <field name="date_invoice" string="Bill Date"/>
+                                        <field name="number"/>
+                                        <field name="reference"/>
+                                        <field name="commercial_partner_id" invisible="1"/>
+                                        <field name="name" invisible="1"/>
+                                        <field name="journal_id" invisible="1"/>
+                                        <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                                        <field name="date_due"/>
+                                        <field name="origin"/>
+                                        <field name="amount_total_signed" string="Total" sum="Total"/>
+                                        <field name="residual_signed" string="To Pay" sum="To pay"/>
+                                        <field name="currency_id" invisible="1"/>
+                                        <field name="company_currency_id" invisible="1"/>
+                                        <field name="state"/>
+                                        <field name="type" invisible="context.get('type',True)"/>
+                                    </tree>
+                                    <form>
+                                        <group>
+                                            <field name="state"/>
+                                            <field name="partner_id" groups="base.group_user" string="Vendor"/>
+                                            <field name="date_invoice" string="Bill Date"/>
+                                            <field name="number"/>
+                                            <field name="reference"/>
+                                        </group>
+                                        <group>
+                                            <field name="date_due"/>
+                                            <field name="origin"/>
+                                            <field name="amount_total_signed"/>
+                                            <field name="residual_signed"/>
+
+                                        </group>
+
+                                    </form>
+                                 </field>
+                            </page>
+                        </notebook>
+
+                     </sheet>
+                 </form>
+            </field>
+        </record>
+
+        <record id="action_siat_eventos_significativos" model="ir.actions.act_window">
+            <field name="name">Registro de Eventos Significativos</field>
+            <field name="res_model">siat.eventos.significativos</field>
+            <field name='view_type'>form</field>
+            <field name='view_mode'>tree,form</field>
+        </record>
+
+        <menuitem id='menu_siat_eventos_significativos'
+                  action='action_siat_eventos_significativos'
+                  name='Eventos Significativos'
+                  parent='payment.root_payment_menu'
+                  sequence='12'/>
+
+    </data>
+</odoo>

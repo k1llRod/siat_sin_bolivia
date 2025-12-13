@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="siat_view_account_payment_invoice_form" model="ir.ui.view">
+            <field name="name">siat.view.account.payment.invoice.form</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_invoice_form"/>
+            <field name="arch" type="xml">
+
+                <field name="amount" position="before">
+                    <field name="gift_card" invisible="1"/>
+                    <field name="it_card" invisible="1"/>
+                </field>
+
+                <xpath expr="//group" position="after">
+                    <group attrs="{'invisible': [('it_card','=',False)], 'required': [('it_card', '=', True)]}">
+                    <label for="first_number_card" string="Datos tarjeta"/>
+                    <div>
+                        <field name="first_number_card" class="oe_inline" password="True" attrs="{'required': [('it_card', '=', True)]}"/> - <field name="last_number_card" class="oe_inline" password="True" attrs="{'required': [('it_card', '=', True)]}"/>
+                    </div>
+                    </group>
+                </xpath>
+
+<!--                <field name="amount" position="attributes">-->
+<!--                    <attribute name="attrs">{'readonly': [('gift_card', '=', True)]}</attribute>-->
+<!--                </field>-->
+
+                 <field name="communication" position="after">
+                    <field name="siat_giftcard_id" attrs="{'invisible': [('gift_card', '=', False)], 'required': [('gift_card', '=', True)]}"/>
+                </field>
+
+            </field>
+        </record>
+
+        <record id="siat_view_account_payment_form" model="ir.ui.view">
+            <field name="name">siat.view.account.payment.form</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//group[2]" position="inside">
+                     <field name="gift_card" invisible="1"/>
+                    <field name="siat_giftcard_id" attrs="{'invisible': [('gift_card', '=', False)], 'required': [('gift_card', '=', True)]}"/>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="siat_view_account_journal_form" model="ir.ui.view">
+            <field name="name">siat.view.account.journal.form</field>
+            <field name="model">account.journal</field>
+            <field name="inherit_id" ref="account.view_account_journal_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//page[@name='advanced_settings']/group" position="inside">
+                    <group string="Gift Card">
+                        <field name="gift_card"/>
+                    </group>
+                    <group string="Tarjeta" attrs="{'invisible': [('type', 'not in',['bank'])]}">
+                        <field name="it_card"/>
+                    </group>
+                    <group string="Metodo de pago SIAT" attrs="{'invisible': [('type', 'not in',['bank', 'cash'])]}">
+                        <field name="metodo_pago_id" options='{"no_open": True, "no_create": True}' />
+                    </group>
+
+                </xpath>
+
+            </field>
+        </record>
+
+    </data>
+</openerp>
+

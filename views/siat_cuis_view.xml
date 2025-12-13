@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="siat_cuis_form_view" model="ir.ui.view">
+            <field name="name">siat.cuis.form.view</field>
+            <field name="model">siat.cuis</field>
+            <field name="arch" type="xml">
+                <form string="Siat Cuis">
+                    <header>
+
+                    <button name="action_get_information_cuis"
+                            string="Obtener CUIS"
+                            type="object"
+                            class="btn-primary"/>
+
+                    <button name="action_get_information_cufd"
+                            string="Obtener CUFD"
+                            type="object"
+                            class="btn-primary"/>
+
+                    <button name="action_get_informationfecha_hora"
+                            string="Obtener Fecha y Hora"
+                            type="object"
+                            class="btn-primary"/>
+
+                    <button name="action_register_point_of_sale"
+                            string="Crear Punto de Venta"
+                            type="object"
+                            class="btn-primary"/>
+                    <button name="action_close_point_of_sale"
+                            string="Cerrar Punto de Venta"
+                            type="object"
+                            class="btn-primary"/>
+
+                    <button name="close_operation_system"
+                            string="Cierre"
+                            type="object"
+                            class="btn-primary"/>
+
+                </header>
+                    <sheet>
+                        <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" placeholder="Nombre"/></h1>
+                    </div>
+                        <group>
+                            <field name="bol_is_rts"/>
+                            <field name="bol_receipt_title"/>
+                            <field name="bol_invoice_category"/>
+                            <field name="bol_razon_social"/>
+                            <field name="bol_entity_title"/>
+                            <field name="bol_invoice_caption_1"/>
+                            <field name="bol_invoice_caption_2"/>
+                            <field name="bol_invoice_caption_3"/>
+                            <field name="bol_invoice_caption_4"/>
+                            <field name="type_doc_sector"/>
+                            <field name="type_factura"/>
+                        </group>
+
+                        <group string="CUIS">
+                            <group>
+                                <field name="mode_constant"/>
+                                <field name="branch_code"/>
+                                <field name="selling_point_code"/>
+                                <field name="parent_cuis" readonly="1" attrs="{'invisible': [('parent_cuis', '=', False)]}"/>
+                            </group>
+                            <group>
+                                <field name="cuis"/>
+                                <field name="date_obtaining"/>
+                                <field name="date_validity"/>
+
+                            </group>
+                        </group>
+
+                        <group string="CUFD">
+                            <group>
+                                <field name="control_code"/>
+                            </group>
+                            <group>
+                                <field name="obtaining_date"/>
+                                <field name="effective_date"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="cufd_code"/>
+                            <field name="direction"/>
+                            <field name="municipality"/>
+                        </group>
+                         <group string="Facturacion sin internet">
+                            <field name="evento_significativo"/>
+                            <field name="evento_significativo_id" attrs="{'readonly': [('evento_significativo', '=', True)]}"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

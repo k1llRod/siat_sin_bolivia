@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="dao_siat_product_template_only_form_view" model="ir.ui.view">
+            <field name="name">dao.siat.product.template.only.form.view</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//page[@name='notes']" position="after">
+                    <page name="siat" string="Siat">
+                        <group>
+                            <field name="economic_activity"/>
+                            <field name="codigo_caeb" invisible="1"/>
+                            <field name="siat_codigo_producto_sin" domain="[('codigo_actividad','=', codigo_caeb)]"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="product_uom_id"/>
+                            </group>
+                            <group>
+                                <field name="imei"/>
+                                <field name="gift_card"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="siat_product_normal_form_view" model="ir.ui.view">
+            <field name="name">siat.product.normal.form.view</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//page[@name='notes']" position="after">
+                    <page name="siat" string="Siat">
+                        <group>
+                            <field name="economic_activity"/>
+                            <field name="codigo_caeb" invisible="1"/>
+                            <field name="siat_codigo_producto_sin" domain="[('codigo_actividad','=', codigo_caeb)]"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="product_uom_id"/>
+                            </group>
+                            <group>
+                                <field name="imei"/>
+                            </group>
+                            <group>
+                                <field name="gift_card"/>
+                            </group>
+                        </group>
+
+                    </page>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="siat_product_category_taxes_form" model="ir.ui.view">
+            <field name="name">siat.product.category.taxes.form</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="account.view_category_property_form" />
+            <field name="arch" type="xml">
+                <group name="first" position="after">
+                    <group name="siat" string="Siat">
+                        <field name="economic_activity"/>
+                        <field name="codigo_caeb" invisible="1"/>
+                        <field name="siat_codigo_producto_sin" domain="[('codigo_actividad','=', codigo_caeb)]"/>
+                    </group>
+                </group>
+            </field>
+        </record>
+    </data>
+</openerp>
