@@ -115,16 +115,25 @@ class SiatServicioFacturacionOperaciones(models.Model):
         })
         return self.check_response(res)
 
+    @api.model
     def consulta_evento_significativo(self, wsdl=False, channel=False, event_date=False):
         """
-        metodo: consulta evento significativo
-        return: dic respuesta
+        Método: consulta eventos significativos registrados en el SIN para una fecha dada.
+        Retorna la respuesta del WS (dict u objeto) si es válida,
+        o lanza ValidationError si hay error.
         """
         company_id = self.env.user.company_id
+
+        if not channel:
+            raise ValidationError("No se ha definido el canal SIAT (CUIS) para la consulta de eventos.")
+
+        if not event_date:
+            raise ValidationError("Debe especificar una fecha de evento para la consulta (formato YYYY-MM-DD).")
+
         connection, client = self.connect_wsdl(wsdl=wsdl, api_key=True)
         self.conection_validation(connection, client)
+
         try:
-            # my code
             res = client.service.consultaEventoSignificativo({
                 'codigoAmbiente': company_id.environment_code,
                 'codigoSistema': str(company_id.system_code),
@@ -135,16 +144,21 @@ class SiatServicioFacturacionOperaciones(models.Model):
                 'codigoPuntoVenta': channel.selling_point_code,
                 'fechaEvento': event_date,
             })
-        except Exception, e:
-            res = {'transaccion': False,
-                   'mensajesList': [{'codigo': 995, 'descripcion': 'SERVICIO NO DISPONIBLE \n' + str(e)}]}
+        except Exception as e:
+            # Normalizamos la respuesta como dict de error
+            res = {
+                'transaccion': False,
+                'mensajesList': [{
+                    'codigo': 995,
+                    'descripcion': 'SERVICIO NO DISPONIBLE \n%s' % e
+                }]
+            }
+
         res_validated, str_error = self.validate_response(res)
         if res_validated:
             return res
         else:
-            # podemos aplicar evaluacion propias del metodo
-            # -------
-            # caso contrario simplemente devolvemos los mensajes por defecto de la respuesta
+            # Ya viene mensaje armado desde validate_response
             raise ValidationError(str_error)
 
     def consulta_punto_venta(self, company_id=False, wsdl=False, cuis=False):
@@ -166,6 +180,7 @@ class SiatServicioFacturacionOperaciones(models.Model):
         })
         return self.check_response(res)
 
+    @api.model
     def registro_evento_significativo(self,
                                       wsdl=False,
                                       siat_cuis=False,
@@ -178,49 +193,73 @@ class SiatServicioFacturacionOperaciones(models.Model):
                                       event_date_start=False,
                                       event_date_end=False):
         """
-        Método: solicitud cierre punto de venta
-        Return: diccionario de respuesta
+        Registro de evento significativo ante el SIN.
         """
+
         company_id = self.env.user.company_id
         connection, client = self.connect_wsdl(wsdl=wsdl, api_key=True)
         self.conection_validation(connection, client)
 
+        # Validaciones mínimas
+        if not event_date_start or not event_date_end:
+            raise ValidationError(u"Las fechas de inicio y fin son obligatorias")
+        if not siat_cuis:
+            raise ValidationError(u"CUIS no definido para el registro de evento.")
+        if not siat_cufd:
+            raise ValidationError(u"CUFD no definido para el registro de evento.")
+        if not code_event:
+            raise ValidationError(u"Código de evento significativo no definido.")
+        if branch_code is False:
+            raise ValidationError(u"Código de sucursal no definido.")
+        if not cufd_code:
+            raise ValidationError(u"CUFD del evento (cufdEvento) no definido.")
+
+        # Normalizar punto de venta (si no hay, mandar 0)
+        selling_point_code = selling_point_code or 0
+
+        # Parse flexible (con o sin milisegundos)
+        def _parse_dt(s):
+            try:
+                return datetime.strptime(s, "%Y-%m-%dT%H:%M:%S")
+            except Exception:
+                # intenta con milisegundos
+                return datetime.strptime(s, "%Y-%m-%dT%H:%M:%S.%f")
+
         try:
-            if not event_date_start or not event_date_end:
-                raise ValidationError(u"Las fechas de inicio y fin son obligatorias")
+            start_dt = _parse_dt(event_date_start)
+            end_dt = _parse_dt(event_date_end)
+        except Exception as e:
+            raise ValidationError(u"Formato de fechas inválido: %s" % e)
 
-            # Conversión a datetime
-            start_dt = datetime.strptime(event_date_start, "%Y-%m-%dT%H:%M:%S")
-            end_dt = datetime.strptime(event_date_end, "%Y-%m-%dT%H:%M:%S")
+        if start_dt >= end_dt:
+            raise ValidationError(u"La fecha de inicio debe ser anterior a la fecha de fin")
 
-            if start_dt >= end_dt:
-                raise ValidationError(u"La fecha de inicio debe ser anterior a la fecha de fin")
+        # Duración máxima (define aquí 24 o 72, pero que sea consistente en todo tu sistema)
+        if (end_dt - start_dt) > timedelta(hours=24):
+            raise ValidationError(u"El evento no puede durar más de 24 horas")
 
-            if (end_dt - start_dt) > timedelta(hours=24):
-                raise ValidationError(u"El evento no puede durar más de 24 horas")
+        # TZ: asumimos que la fecha de entrada está en hora local Bolivia (sin tz)
+        user_tz = self.env.user.tz or 'America/La_Paz'
+        bolivia_tz = pytz.timezone(user_tz)
 
-            # Ajustar zona horaria
-            user_tz = self.env.user.tz or 'America/La_Paz'
-            bolivia_tz = pytz.timezone(user_tz)
+        start_bolivia = bolivia_tz.localize(start_dt)
+        end_bolivia = bolivia_tz.localize(end_dt)
 
-            # Localizar fechas
-            start_bolivia = bolivia_tz.localize(start_dt)
-            end_bolivia = bolivia_tz.localize(end_dt)
+        # Formato final con milisegundos (3 dígitos)
+        formatted_start = start_bolivia.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3]
+        formatted_end = end_bolivia.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3]
 
-            # Formato final con milisegundos
-            formatted_start = start_bolivia.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3]
-            formatted_end = end_bolivia.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3]
-
+        try:
             res = client.service.registroEventoSignificativo({
                 'codigoAmbiente': company_id.environment_code,
                 'codigoSistema': unicode(company_id.system_code),
                 'nit': int(company_id.siat_nit),
                 'cuis': unicode(siat_cuis),
                 'cufd': siat_cufd,
-                'codigoSucursal': branch_code,
-                'codigoPuntoVenta': selling_point_code,
-                'codigoMotivoEvento': code_event,
-                'descripcion': unicode(description),
+                'codigoSucursal': int(branch_code),
+                'codigoPuntoVenta': int(selling_point_code),
+                'codigoMotivoEvento': int(code_event),
+                'descripcion': unicode(description or u''),
                 'fechaHoraInicioEvento': formatted_start,
                 'fechaHoraFinEvento': formatted_end,
                 'cufdEvento': cufd_code,
@@ -230,15 +269,14 @@ class SiatServicioFacturacionOperaciones(models.Model):
                 'transaccion': False,
                 'mensajesList': [{
                     'codigo': 995,
-                    'descripcion': u'ERROR EN FORMATO DE FECHAS: %s' % unicode(e)
+                    'descripcion': u'ERROR EN LLAMADA A registroEventoSignificativo: %s' % unicode(e)
                 }]
             }
 
         res_validated, str_error = self.validate_response(res)
         if res_validated:
             return res
-        else:
-            raise ValidationError(str_error)
+        raise ValidationError(str_error)
 
     def cierre_punto_venta(self, company_id=False,
                                  selling_point_code=False,

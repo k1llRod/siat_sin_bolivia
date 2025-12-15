@@ -27,12 +27,13 @@
                                  string="Registrar Evento"
                                  type="object"
                                  class="btn-primary"
-                                 attrs="{'invisible': [('state', '!=', 'Draft')]}"/>
-                         <button name="action_register_package_invoices"
+                                 attrs="{'invisible': [('state', '==', 'send')]}"
+                                 />
+                         <button name="action_send_offline_invoices_no_internet"
                                  string="Envio paquete"
                                  type="object"
                                  class="btn-primary"
-                                 attrs="{'invisible': [('package_sent', '!=', False)]}"/>
+                                 attrs="{'invisible': [('package_sent', '==', 'validated')]}"/>
                          <button name="action_inv_package_receipt_validation"
                                  string="Validacion"
                                  type="object"

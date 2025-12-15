@@ -16,6 +16,10 @@ class account_payment(models.Model):
     last_number_card = fields.Char(string="Datos tarjeta", size=4)
 
     it_card = fields.Boolean(string="Es Tarjeta", related="journal_id.it_card")
+    control_number = fields.Char(string="Numero de control")
+    payments_checks = fields.Char(string="Cheques / otros")
+    control_code = fields.Char(string="Codigo de control")
+    beneficiary = fields.Char(string="Beneficiario")
 
     @api.onchange('journal_id', 'siat_giftcard_id')
     def _onchange_journal_id(self):
